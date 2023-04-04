@@ -1,0 +1,7 @@
+version: '2.4'
+services:
+   twitter-telegram-notifier:
+    build: .
+    container_name: twitter-telegram-notifier
+    user: 1000:1000
+    restart: unless-stopped

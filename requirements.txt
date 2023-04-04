@@ -1,0 +1,2 @@
+python-telegram-bot==20.2
+twitchAPI==3.9.0

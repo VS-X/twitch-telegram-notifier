@@ -1,0 +1,8 @@
+[twitch]
+app_id = 
+app_secret = 
+usernames = Elajjaz,DougDoug
+
+[telegram]
+bot_token = 
+chat_id = 
