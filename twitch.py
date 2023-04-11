@@ -11,7 +11,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-StreamData: Final = namedtuple("StreamData", ["status", "game", "streamer_name"])
+StreamData: Final = namedtuple(
+    "StreamData", ["status", "game", "streamer_name", "stream_title"]
+)
 
 
 async def get_stream_data(
@@ -21,13 +23,16 @@ async def get_stream_data(
     async for stream in twitch.get_streams(user_id=list(user_ids.values())):
         if stream:
             live_streams[stream.user_login] = StreamData(
-                status="live", game=stream.game_name, streamer_name=stream.user_name
+                status="live",
+                game=stream.game_name,
+                streamer_name=stream.user_name,
+                stream_title=stream.title,
             )
 
     for username in user_ids:
         if username not in live_streams:
             live_streams[username] = StreamData(
-                status="offline", game=None, streamer_name=None
+                status="offline", game=None, streamer_name=None, stream_title=None
             )
     return live_streams
 
@@ -47,13 +52,17 @@ async def detect_changes_and_generate_messages(
         current_status = current_stream_data[username].status
         current_game = current_stream_data[username].game
         streamer_name = current_stream_data[username].streamer_name
-
+        stream_title = current_stream_data[username].stream_title
         if prev_status is None:
             continue  # do not generate messages on startup (prev_status is initialized with None)
         elif current_status != prev_status and current_status == "live":
-            messages.append(f"{streamer_name} went live with {current_game}")
+            messages.append(
+                f"{streamer_name} went live with {current_game}\n{stream_title}"
+            )
         elif current_game != prev_game and current_status == "live":
-            messages.append(f"{streamer_name} switched to {current_game}")
+            messages.append(
+                f"{streamer_name} switched to {current_game}\n{stream_title}"
+            )
 
     return messages
 
