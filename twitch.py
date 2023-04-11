@@ -91,7 +91,9 @@ async def main():
 
         # Initialize previous stream data
         prev_stream_data = defaultdict(
-            lambda: StreamData(status=None, game=None, streamer_name=None)
+            lambda: StreamData(
+                status=None, game=None, streamer_name=None, stream_title=None
+            )
         )
 
         logger.info("Starting monitoring")
