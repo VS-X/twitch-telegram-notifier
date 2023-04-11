@@ -27,7 +27,7 @@ async def get_stream_data(
     for username in user_ids:
         if username not in live_streams:
             live_streams[username] = StreamData(
-                status="offline", game=None, streamer_name=stream.user_name
+                status="offline", game=None, streamer_name=None
             )
     return live_streams
 
