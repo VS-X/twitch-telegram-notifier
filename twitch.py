@@ -44,6 +44,11 @@ async def detect_changes_and_generate_messages(
     current_stream_data: Dict[str, str],
 ):
     messages: List[str] = []
+    offline_users = list(set(config["usernames"]) - set(current_stream_data.keys()))
+
+    for username in offline_users:
+        streams[username] = {"status": "offline"}
+
     for username in current_stream_data:
         prev_status = streams.get(username, {}).get("status", None)
         prev_game = streams.get(username, {}).get("game", None)
@@ -57,9 +62,10 @@ async def detect_changes_and_generate_messages(
                 "title": current_title,
                 "status": current_status,
             }
-        elif current_status == "offline":  # streamer went offline
-            streams[username]["status"] = current_status
-        elif current_status != prev_status:  # streamer went live
+        elif (
+            current_status != prev_status and current_status == "live"
+        ):  # streamer went live
+            logger.debug(current_status, prev_status)
             streams[username]["status"] = current_status
             streams[username]["game"] = current_game
             messages.append(
@@ -114,7 +120,7 @@ async def main():
                 logger.exception(f"Unexpected error occurred: {e}")
 
             finally:
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
     except Exception as e:
         logger.exception(f"Unexpected error occurred: {e}")
 
