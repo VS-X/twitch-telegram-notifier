@@ -1,6 +1,5 @@
-version: '2.4'
 services:
-   twitch-telegram-notifier:
+  twitch-telegram-notifier:
     build: .
     container_name: twitch-telegram-notifier
     user: 1000:1000
